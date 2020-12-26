@@ -3,9 +3,9 @@ clc
 format short g
 roundn = @(t,n) round(t*10^n)./10^n;
 
-n=14;            % Order of the graph
+n=6;            % Order of the graph
 
-B=[[0, 1, 1, 2, 2, 3, 2, 3, 4, 3, 4, 5, 6, 5], [1, 0, 2, 1, 3, 2, 3, 4, 5, 4, 5, 6, 7, 6], [1, 2, 0, 3, 1, 2, 1, 2, 3, 2, 3, 4, 5, 4], [2, 1, 3, 0, 2, 1, 4, 5, 4, 3, 6, 7, 6, 5], [2, 3, 1, 2, 0, 1, 2, 3, 2, 1, 4, 5, 4, 3], [3, 2, 2, 1, 1, 0, 3, 4, 3, 2, 5, 6, 5, 4], [2, 3, 1, 4, 2, 3, 0, 1, 2, 3, 2, 3, 4, 3], [3, 4, 2, 5, 3, 4, 1, 0, 1, 2, 1, 2, 3, 2], [4, 5, 3, 4, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1], [3, 4, 2, 3, 1, 2, 3, 2, 1, 0, 3, 4, 3, 2], [4, 5, 3, 6, 4, 5, 2, 1, 2, 3, 0, 1, 2, 3], [5, 6, 4, 7, 5, 6, 3, 2, 3, 4, 1, 0, 1, 2], [6, 7, 5, 6, 4, 5, 4, 3, 2, 3, 2, 1, 0, 1], [5, 6, 4, 5, 3, 4, 3, 2, 1, 2, 3, 2, 1, 0]];
+B= [[0, 1, 2, 2, 3, 4], [1, 0, 1, 1, 2, 3], [2, 1, 0, 2, 1, 2], [2, 1, 2, 0, 1, 2], [3, 2, 1, 1, 0, 1], [4, 3, 2, 2, 1, 0]];
 
 
 
@@ -26,14 +26,14 @@ EE=sum(exp(eig(D)));
 
 % The distance Laplacian matrix
 Tr=sum(D)';
-t=sum(Tr)/n;
+t0=sum(Tr)/n;
 sig=sum(Tr)/2;
 Diag=diag(Tr);
 DL=Diag-D;
 q1=eig(DL);
 x1 = roundn(q1,4);
 rho1=max(x1);
-E1=sum(abs(eig(DL)-t));
+E1=sum(abs(eig(DL)-t0));
 EE1=roundn(sum(exp(eig(DL)-sig)),4);
 
 % The distance signless Laplacian matrix
@@ -42,7 +42,7 @@ DQ=Diag+D;
 q2=eig(DQ);
 x2 = roundn(q2,4);
 rho2=max(x2);
-E2=sum(abs(eig(DQ)-t));
+E2=sum(abs(eig(DQ)-t0));
 EE2=roundn(sum(exp(eig(DQ)-sig)),4);
 
 % The Schultz matrix
@@ -116,8 +116,6 @@ EE6=sum(exp(eig(Gut)));
 % The Szeged matrix
 D4= reshape(B,[n,n]);
 l=size(D4,1);
-t1=[];
-s1=[];
 e=[];
 for i=1:l
     for j=i+1:l
@@ -152,24 +150,25 @@ end
 res1=[e ress];
 res2=[e rest];
 res3=[e resk];
-[sm, ~] = size(s1);
+[sm, ~] = size(ss);
 U=[];
 for i=1:sm
-    U = [U; length(s1(i,:))];
+    U = [U; length(ss(i,:))];
 end
 Us = (ress~=0);
 U=sum(Us');
 U=U';
 
-[tm, ~] = size(t1);
+[tm, ~] = size(tt);
 V=[];
 for i=1:tm
-    V = [V; length(t1(i,:))];
+    V = [V; length(tt(i,:))];
 end
 Vt = (rest~=0);
 V=sum(Vt');
 V= V';
 N=[U V];
+%N1=[e U V]
 Sz=[];
 for i=1:l
     for j=1:l
@@ -183,7 +182,7 @@ q7=eig(Sz);
 x7 = roundn(q7,4);
 rho7=max(x7);
 E7=sum(abs(eig(Sz)));
-EE7=sum(exp(eig(Sz)))
+EE7=sum(exp(eig(Sz)));
 
 
 % The PI matrix
@@ -220,7 +219,7 @@ ABC2=[];
 for i=1:l
     for j=1:l
         if A2(i,j)==1
-            A2(i,j)=sqrt((N(i)+N(j)-2)/(N(i)*N(j)));
+            A2(i,j)=sqrt((N(i)+N(j)-2)./(N(i)*N(j)));
             ABC2=A2;
         end
     end
